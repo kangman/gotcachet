@@ -1,34 +1,64 @@
 
 
-# Action PLan
+# Requirements
 
-## - Select a Cloud compute provider:
- - AWS
-   - RDS Aurora service - for multi-zone availability
-     - will deploy an aurora cluster with multiple availability zones to have high availability
-   - Elastic Beanstalk - which provides a platform to deploy the web end portion of the application.  In this case the [cachet](https://cachethq.io) status page application.  It comes with
-     - monitoring (cloudwatch)
-     - scaling (auto scaling groups for the web nodes) when a load threshold is hit then the ASG(auto scaling group) will add additional web nodes up to the limit defined in the Elastic Beanstalk Environment. Similarly when load is low nodes can be scaled down to reduce costs.
-     - elastic load balancing ( to spread the requests )
-   - All of these parts will be deployed within an AWS VPC that will give us a logical separation of our infrastructure from other environments/applications
-   - security groups will split the access to parts of the web stack.  
-     - RDS will be part of the data security group which will only be allowed to communicate with the web security group on port 3306.
-     - Web security group will be open to incoming requests from http(80), https(443) and ssh(22 source locked to operator's IP.
-     - Elastic Load Balancer security group will open both 80 and 443.  
-     - SSL certificates can be managed with AWS Certificate manager and set on the Elastic load balancer.
+- You will need an AWS account with a IAM user created with the admin policy attached to or a policy that gives you access to the required services within AWS. Credentials of the user will need to be set in your shell
+
+```
+export AWS_ACCESS_KEY_ID=YOUR-ACCESS-KEY
+export AWS_SECRET_ACCESS_KEY=YOUR-SECRET-KEY
+```
+or in the `~/.aws/credentials` file
+
+```
+[test]
+aws_access_key_id = YOUR-ACCESS-KEY
+aws_secret_access_key = YOUR-SECRET-KEY
+```
+
+where you can invoke it with the `--profile` flag e.g. `eb list --profile test` or `aws s3 ls --profile test`
 
 
-## - Select a provisioning tool:
-   - In this case I am using terraform to setup the environment
-     - Reasons:
-       - Allows for separation of concerns when creating your code to build up your infrastructure.
-         - Each snippet of code can be for a particular bit of your infrastructure
-       - Interpolation syntax to allow to call up dynamic data into your scripts so that underlying infrastructure outputs can be used for higher order components to be built on top.
+- Install terraform, if you are using OSX install the package manager [homebrew](http://brew.sh) and install terraform with `brew update && brew install terraform` otherwise you can download a binary that suits your platform [here](https://www.terraform.io/downloads.html)
 
-## - Additional Points (Optional)
-  - Validating the servers are running correctly
-    - Serverspec or some other kind of testing tool
+- You should also have the python package manager `pip` you can install it with `easy_install pip`
 
-## Requirements
+- Install the eb cli tool `pip install eb`
 
-- Install terraform, if you are using OSX install [homebrew](http://brew.sh) and install `brew update && brew install terraform` otherwise you can grab a binary that suits your platform [here](https://www.terraform.io/downloads.html)
+- download a copy of this repo to your laptop
+`git clone https://github.com/kangman/gotcachet.git`
+
+- Setup your AWS credentials with a terraform.tfvars files within this git repo like so:
+
+```
+access_key = "YOUR ACCESS KEY"
+secret_key = "YOUR SECRET KEY"
+```
+Once that is done let's start building our app
+
+# Setup
+
+1. go to the repo`cd gotcachet`
+2. run `terraform plan`
+3. run `terraform apply`
+4. run `terraform show > cachet-aws-info.txt`
+   we'll refer to this output for our aws outputs later when deploying the app
+1. Create the vpc where everything will live
+2. Create the subnets in different availability zones
+  1. Create two subnets for the web nodes
+  2. Create two subnets for the db nodes
+  3. Create a subnet for ELB
+3. Create security groups
+  1. ELB ingress: 0.0.0.0/0 port 80/443 egress: web-secgroup
+  2. RDS ingress: web-secgroup port 3306 egress:
+  3. Web ingress: db-secgroup egress: 0.0.0.0/0 port 80/443
+4. Create RDS cluster
+5. Create RDS instances
+5. Create Elastic Beanstalk
+  1. setup .ebextensions
+    1. envvars
+    2. httpd.conf
+    3. .env for cachet
+    4. install apache, rewrite, php5_mod
+    5.
+6.
