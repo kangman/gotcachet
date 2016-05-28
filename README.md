@@ -2,11 +2,12 @@
 
 # Requirements
 
-- You will need an AWS account with a IAM user created with the admin policy attached to or a policy that gives you access to the required services within AWS. Credentials of the user will need to be set in your shell
+### AWS Account
+- You will need an AWS account with a IAM user created with the AWS provided admin policy attached to it or a policy that gives you access to the required services within AWS. Credentials of the user will need to be set in your shell
 
 ```
-export AWS_ACCESS_KEY_ID=YOUR-ACCESS-KEY
-export AWS_SECRET_ACCESS_KEY=YOUR-SECRET-KEY
+$ export AWS_ACCESS_KEY_ID=YOUR-ACCESS-KEY
+$ export AWS_SECRET_ACCESS_KEY=YOUR-SECRET-KEY
 ```
 or in the `~/.aws/credentials` file
 
@@ -16,17 +17,23 @@ aws_access_key_id = YOUR-ACCESS-KEY
 aws_secret_access_key = YOUR-SECRET-KEY
 ```
 
-where you can invoke it with the `--profile` flag e.g. `eb list --profile test` or `aws s3 ls --profile test`
+where you can invoke it with the `--profile` flag e.g. `$ eb list --profile test` or `$ aws s3 ls --profile test`
 
+### Terraform
+- Install terraform, if you are using OSX install the package manager [homebrew](http://brew.sh) and install terraform with `$ brew update && brew install terraform && brew cleanup` otherwise you can download a binary that suits your platform [here](https://www.terraform.io/downloads.html)
 
-- Install terraform, if you are using OSX install the package manager [homebrew](http://brew.sh) and install terraform with `brew update && brew install terraform` otherwise you can download a binary that suits your platform [here](https://www.terraform.io/downloads.html)
+### PIP
+- install pip and setuptools `$ pip install -U pip setuptools`
+- Install the eb cli tool `$ pip install eb`
 
-- You should also have the python package manager `pip` you can install it with `easy_install pip`
+### PHP
+- We will need to have PHP installed to generate the app key. We will install PHP v5.5 to aim for compatibility
 
-- Install the eb cli tool `pip install eb`
+`$ brew install php55 && brew cleanup`
 
+### The code
 - download a copy of this repo to your laptop
-`git clone https://github.com/kangman/gotcachet.git`
+`$ git clone https://github.com/kangman/gotcachet.git`
 
 - Setup your AWS credentials with a terraform.tfvars files within this git repo like so:
 
@@ -34,24 +41,22 @@ where you can invoke it with the `--profile` flag e.g. `eb list --profile test` 
 access_key = "YOUR ACCESS KEY"
 secret_key = "YOUR SECRET KEY"
 ```
-Once that is done let's start building our app
+Once that is done let's start deploying our app
 
 # Setup
 
-1. go to the repo`cd gotcachet`
-2. run `terraform plan`
-3. run `terraform apply`
-4. run `terraform show > cachet-aws-info.txt`
-   we'll refer to this output for our aws outputs later when deploying the app
-1. Create the vpc where everything will live
-2. Create the subnets in different availability zones
-  1. Create two subnets for the web nodes
-  2. Create two subnets for the db nodes
-  3. Create a subnet for ELB
-3. Create security groups
-  1. ELB ingress: 0.0.0.0/0 port 80/443 egress: web-secgroup
-  2. RDS ingress: web-secgroup port 3306 egress:
-  3. Web ingress: db-secgroup egress: 0.0.0.0/0 port 80/443
+1. go to the repo
+`$ cd gotcachet`
+2. run `$ terraform plan`
+3. run `$ terraform apply` terraform will start the build
+4. once build is complete run `$ terraform show > cachet-aws-info.txt` this will write out the computed AWS parts into a text file for later reference when deploying our app.
+5. Next we will clone the cachet app in another directory
+6. move out of the repo `cd ..`
+7. `git clone https://github.com/cachethq/Cachet.git`
+8. move into the cachet app repo `cd Cachet`
+9. initialize with eb cli `eb init cachet-app`
+10. create your app `eb create cachet-app`
+
 4. Create RDS cluster
 5. Create RDS instances
 5. Create Elastic Beanstalk
