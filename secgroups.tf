@@ -3,7 +3,7 @@
 resource "aws_security_group" "cachet-db" {
   name = "cachet-db"
   description = "cachet db security group"
-  vpc_id = ""
+  vpc_id = "${aws_vpc.cachet.id}"
 
   tags {
     Name = "cachet-db-secgroup"
@@ -13,7 +13,7 @@ resource "aws_security_group" "cachet-db" {
 resource "aws_security_group" "cachet-web" {
   name = "cachet-web"
   description = "cachet web security group"
-  vpc_id = ""
+  vpc_id = "${aws_vpc.cachet.id}"
 
   tags {
     Name = "cachet-web-secgroup"
@@ -24,7 +24,7 @@ resource "aws_security_group" "cachet-web" {
 resource "aws_security_group" "cachet-elb" {
   name = "cachet-elb"
   description = "cachet elb security group"
-  vpc_id = ""
+  vpc_id = "${aws_vpc.cachet.id}"
 
   tags {
     Name = "cachet-elb-secgroup"
