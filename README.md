@@ -55,6 +55,7 @@ Once that is done let's start deploying our app
 7. `git clone https://github.com/cachethq/Cachet.git`
 8. move into the cachet app repo `cd Cachet`
 9. initialize with eb cli `eb init cachet-app`
+10.
 10. create your app `eb create cachet-app`
 
 4. Create RDS cluster
