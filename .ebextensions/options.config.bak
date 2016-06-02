@@ -1,0 +1,20 @@
+option_settings:
+  - namespace: aws:elasticbeanstalk:container:php:phpini
+    option_name: document_root
+    value: /public
+
+  - namespace: aws:autoscaling:launchconfiguration
+    option_name: EC2KeyName
+    value: kangaws 
+    
+  - namespace: aws:ec2:vpc
+    option_name: DBSubnets
+    value: subnet-fg148g78
+    
+  - namespace: aws:autoscaling:launchconfiguration
+    option_name: InstanceType
+    value: t2.small
+    
+  - namespace: aws:autoscaling:launchconfiguration
+    option_name: SecurityGroups
+    value: sg-7f1ef110

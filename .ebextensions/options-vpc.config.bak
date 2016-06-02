@@ -1,0 +1,6 @@
+option_settings:
+  aws:ec2:vpc:
+    VPCId: "vpc-4436e023"
+    ELBSubnets: "subnet-abf4b1f3, subnet-6ca6df46"
+    Subnets: "subnet-aef4b1f6, subnet-6da6df47"
+    AssociatePublicIpAddress: "true"
