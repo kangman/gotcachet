@@ -138,4 +138,3 @@ not allow this and gives an error.
 Errors that httpd was throwing wasn't exact but removing the comments or moving
 them to a separate line resolve the error.
 
-# Conclusion
